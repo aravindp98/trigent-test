@@ -22,7 +22,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest
       - name: Test with pytest
-        run: pytest src/main.py 
+        run: pytest trigent-test/qualitymetrics/qualitymetrics/src/main.py 
       - name: Upload pytest test results
         uses: actions/upload-artifact@v3
         with:
