@@ -3,7 +3,7 @@ pipeline{
   stages{
     stage('checkout'){
 	steps{
-	 git branch: 'release', credentialsId: 'd1a8d5f6-ee90-4f0c-af7d-8e01131fb41f', url: 'https://github.com/aravindp98/trigent-test.git'
+	checkout([$class: 'GitSCM', branches: [[name: '*/docker-sample']], extensions: [], userRemoteConfigs: [[credentialsId: 'd1a8d5f6-ee90-4f0c-af7d-8e01131fb41f', url: 'https://github.com/aravindp98/trigent-test.git']]])
 	}
 	}
 	stage('test'){
