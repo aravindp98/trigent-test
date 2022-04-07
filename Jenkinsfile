@@ -6,15 +6,6 @@ pipeline{
 	 git branch: 'release', credentialsId: 'd1a8d5f6-ee90-4f0c-af7d-8e01131fb41f', url: 'https://github.com/aravindp98/trigent-test.git'
 	}
 	}
-	stage('test'){
-	   steps{
-	      sh " pip install nose coverage nosexcover pylint "
-			   }
-			   }
-    //stage('coverage'){
-	   // steps{
-		//  script{ 
-		//  sh " nosetests --with-xunit --xunit-file=nosetests.xml --with-coverage --cover-package=. --cover-branches --cover-xml "
      stage('SonarQube analysis') {
 		  environment{
 		    sonarHome = tool 'SonarQubeScanner'
