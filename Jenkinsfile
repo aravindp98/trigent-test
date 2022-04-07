@@ -13,8 +13,8 @@ pipeline{
             steps {
                 withSonarQubeEnv('sonar') {
                         sh '''$sonarHome/bin/sonar-scanner \
-                             -Dsonar.projectKey=mycode \
-                             -Dsonar.projectName=sample-test \
+                             -Dsonar.projectKey=qualitymetric \
+                             -Dsonar.projectName=Python-project \
 							 -Dsonar.projectVersion=1.0 \
                              -Dsonar.sources=.\
                              -Dsonar.language=py \
