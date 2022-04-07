@@ -10,8 +10,8 @@ if __name__ == '__main__':
     # print(res)
     os.makedirs ('result', exist_ok=True)
     data = {
-        "state" "karnataka",
-        "capital" "Bengaluru"
+        "state": "karnataka",
+        "capital": "Bengaluru"
     }
     with open('result/' + 'output.json', 'w') as email_file:
         json.dump(data, email_file)
