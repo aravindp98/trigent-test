@@ -29,7 +29,7 @@ class JiraHelper(object):
         # url = self.jira_url + endpoint
         url = endpoint
         headers = {'content-type': 'application/json'}
-        auth = (self.jira_usname, self.jira_password)
+        auth = (selfjira_usname, self.jira_password)
         resp = None
 
         try:
