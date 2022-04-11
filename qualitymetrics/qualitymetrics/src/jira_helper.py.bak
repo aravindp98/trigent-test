@@ -11,7 +11,7 @@ class JiraHelper(object):
 
     def __init__(self):
         self.jira_url = 'https://trigentnav.atlassian.net'
-        self.jira_usname = "Radha S C"
+        self.jira_usname = Radha S C
         self.jira_password = "TriDO@123"
 
     def make_jira_request(self, endpoint, request_type, payload=None):
