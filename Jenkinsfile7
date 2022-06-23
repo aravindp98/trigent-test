@@ -1,0 +1,82 @@
+pipeline{
+    agent any
+    tools {
+        nodejs  "18.0.0"
+        maven "Maven3"
+    }
+   
+    stages{
+        stage('SVN-checkout'){
+            steps{
+                checkout([$class: 'SubversionSCM', additionalCredentials: [], excludedCommitMessages: '', excludedRegions: '', excludedRevprop: '', excludedUsers: '', filterChangelog: false, ignoreDirPropChanges: false, includedRegions: '', locations: [[cancelProcessOnExternalsFail: true, credentialsId: 'SVN', depthOption: 'infinity', ignoreExternalsOption: true, local: '.', remote: 'https://svn.trigent.com/NAV1802_MRE']], quietOperation: true, workspaceUpdater: [$class: 'UpdateUpdater']])
+            }
+        }
+        stage('build-Client'){
+            steps{
+                script{
+                    sh " pwd "
+                    dir('Source code/MREClient') {
+                        sh " npm install --legacy-peer-deps "
+                        sh "CI=false npm run staging  "
+                    }
+                }
+            }
+        }
+        stage("zip-build"){
+            steps{
+                script{
+                    dir('Source code/MREClient'){
+                        sh " zip build.zip build "
+                        sh " svn commit -m 'new mre commit' --username=${env.mre_svn_user} --password=${env.mre_svn_pw} build.zip"
+                }
+            }
+        }
+        }
+        stage('copy files'){
+            steps{
+                script{
+                        sh ''' 
+                        #!/bin/bash
+                        cd 
+                        cp -rf '/var/lib/jenkins/workspace/MRE-build/Source code/MREClient/build/'* '/var/lib/jenkins/workspace/MRE-build/Source code/MREApplication/mre/src/main/webapp/resources/' '''
+                }
+            }
+        }
+        stage('Mre-war-EAR'){
+            steps{
+                script{
+                    sh " pwd "
+                    dir('Source code/MREApplication/frse2'){
+                    sh "mvn clean install"
+                    }
+                    dir('Source code/MREApplication/frseSchema'){
+                    sh "mvn clean install"
+                    }
+                    dir('Source code/MREApplication/mre'){
+                    sh "mvn clean install"
+                    }
+                    dir('Source code/MREApplication'){
+                    sh "mvn -Dhttps.protocols=TLSv1.2 clean"
+                    sh "mvn -Dhttps.protocols=TLSv1.2 package"
+                    }
+                }
+                }
+        stage('SonarQube analysis') {
+            environment{
+                sonarHome = tool 'SonarQubeScanner'
+            }
+            steps {
+                withSonarQubeEnv('sonar') {
+                        sh '''$sonarHome/bin/sonar-scanner \
+                             -Dsonar.projectKey=Nav \
+                             -Dsonar.projectName=mre-project \
+							 -Dsonar.projectVersion=1.0 \
+                             -Dsonar.sources=.\
+                             -Dsonar.language=react js \
+                             -Dsonar.sourceEncoding=UTF-8 '''
+            }
+        }
+        }
+}
+}
+}
